@@ -6,4 +6,6 @@ JWT token authentication has been added to relevant routes.
 
 ## How to run the project
 The development server can be started by the following command
-```python main.py```
+```
+python main.py
+```
