@@ -7,3 +7,8 @@ class SuccessResponse(BaseModel):
     status_code: int
     detail: Optional[str]
     data: Optional[Any]
+
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str

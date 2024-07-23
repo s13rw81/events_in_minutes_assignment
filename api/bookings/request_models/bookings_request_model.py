@@ -6,5 +6,8 @@ from pydantic import BaseModel
 
 class BookingsRequest(BaseModel):
     description: Optional[str]
-    venue: Optional[str]
-    created_at: datetime
+    venue_id: Optional[int] = None
+    event_start: Optional[datetime] = None
+    event_end: Optional[datetime] = None
+    # id for updating booking
+    booking_id: Optional[str] = None

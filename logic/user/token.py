@@ -7,7 +7,6 @@ from fastapi import Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer
 from jose import jwt, JWTError
 from logging_config import log
-from models.user.user_internal import UserInternal
 from starlette import status
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl = "auth/token")
@@ -44,8 +43,8 @@ async def get_user_from_token(token: Annotated[str, Depends(oauth2_scheme)]) -> 
     except JWTError:
         raise credentials_exception
 
-    user_by_email = get_user_by_email(email = sub)
-    user_by_username = get_user_by_username(username = sub)
+    user_by_email = await get_user_by_email(email = sub)
+    user_by_username = await get_user_by_username(username = sub)
     user = user_by_email or user_by_username
     log.info(f"returning {user}")
 
