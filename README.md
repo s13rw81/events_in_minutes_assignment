@@ -5,7 +5,19 @@ Contains routes to craete new user, get all users, create bookings, update booki
 JWT token authentication has been added to relevant routes.
 
 ## How to run the project
-The development server can be started by the following command
+create a virtual enviromnent using the command
 ```
-python main.py
+python -m venv _<desired directory name>_
+```
+clone this repositiory into directory created above
+cd into _directory_ and run the command
+```
+Scripts\activate
+```
+to activate the virtual envoronment.
+run the command
+```pip install -r requirements.txt```
+to start the development server
+```
+run python main.py
 ```
