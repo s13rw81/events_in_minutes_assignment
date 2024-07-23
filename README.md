@@ -23,3 +23,4 @@ to start the development server
 ```
 run python main.py
 ```
+secrets.json can be found (here)[https://hastebin.com/share/vulumipude.json].
