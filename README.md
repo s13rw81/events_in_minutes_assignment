@@ -7,16 +7,18 @@ JWT token authentication has been added to relevant routes.
 ## How to run the project
 create a virtual enviromnent using the command
 ```
-python -m venv _<desired directory name>_
+python -m venv <desired project_directory_name>
 ```
 clone this repositiory into directory created above
-cd into _directory_ and run the command
+cd into _project_directory_name_ and run the command
 ```
 Scripts\activate
 ```
 to activate the virtual envoronment.
 run the command
-```pip install -r requirements.txt```
+```
+pip install -r requirements.txt
+```
 to start the development server
 ```
 run python main.py
