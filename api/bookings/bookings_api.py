@@ -2,6 +2,7 @@ from typing import Annotated
 
 from api.bookings.request_models.bookings_request_model import BookingsRequest
 from data.dbapi.bookings.read_queries import get_booking_by_booking_id, get_bookings_by_user_id
+from data.enums.booking_status import BookingStatus
 from data.generic_models.response_model import SuccessResponse
 from fastapi import APIRouter, Depends, HTTPException
 from logging_config import log
@@ -28,7 +29,8 @@ async def get_bookings(user: Annotated[UserInternal, Depends(get_user_from_token
             detail = "error occured while fetching bookings of user"
         )
 
-    return SuccessResponse(status_code = status.HTTP_201_CREATED, detail = "booking created successfully.", data = str(result))
+    return SuccessResponse(status_code = status.HTTP_201_CREATED, detail = "booking created successfully.",
+                           data = str(result))
 
 
 @bookings_api_router.post("/create")
@@ -58,7 +60,8 @@ async def create_new_booking(new_booking: BookingsRequest, user: Annotated[UserI
 
 
 @bookings_api_router.put("/update")
-async def create_new_booking(update_booking: BookingsRequest, user: Annotated[UserInternal, Depends(get_user_from_token)]):
+async def create_new_booking(update_booking: BookingsRequest,
+                             user: Annotated[UserInternal, Depends(get_user_from_token)]):
     log.info(f"/update invoked: update_booking = {update_booking} by user {user}")
 
     if update_booking.booking_id is None:
@@ -67,7 +70,8 @@ async def create_new_booking(update_booking: BookingsRequest, user: Annotated[Us
     existing_booking = await get_booking_by_booking_id(booking_id = update_booking.booking_id)
 
     if not existing_booking:
-        raise HTTPException(status_code = status.HTTP_404_NOT_FOUND, detail = f'booking with id {update_booking.booking_id} not found')
+        raise HTTPException(status_code = status.HTTP_404_NOT_FOUND,
+                            detail = f'booking with id {update_booking.booking_id} not found')
 
     # check if user is the creator of booking
     if str(user.id) != existing_booking.user_id.to_dict()['id']:
@@ -82,4 +86,31 @@ async def create_new_booking(update_booking: BookingsRequest, user: Annotated[Us
         )
 
     return SuccessResponse(status_code = status.HTTP_201_CREATED, detail = "booking updated successfully.",
+                           data = str(result))
+
+
+@bookings_api_router.put("/cancel-booking")
+async def cancel_booking(booking_id: str, user: Annotated[UserInternal, Depends(get_user_from_token)]):
+    log.info(f"/cancel_booking invoked: booking_id = {booking_id} by user {user}")
+
+    if booking_id is None:
+        raise HTTPException(status_code = status.HTTP_400_BAD_REQUEST, detail = 'booking_id is required')
+
+    existing_booking = await get_booking_by_booking_id(booking_id = booking_id)
+
+    if not existing_booking:
+        raise HTTPException(status_code = status.HTTP_404_NOT_FOUND, detail = f'booking with id {booking_id} not found')
+
+    # check if user is the creator of booking
+    if str(user.id) != existing_booking.user_id.to_dict()['id']:
+        raise HTTPException(status_code = status.HTTP_401_UNAUTHORIZED, detail = f'user unauthorised to modify booking')
+
+    result = await existing_booking.update({"$set": {'status': BookingStatus.CANCELLED}})
+    if not result:
+        raise HTTPException(
+            status_code = status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail = "could not cancel booking"
+        )
+
+    return SuccessResponse(status_code = status.HTTP_201_CREATED, detail = "booking cancelled successfully.",
                            data = str(result))

@@ -3,8 +3,9 @@ from typing import Optional
 
 import pytz
 from beanie import Document, Link
+from data.enums.booking_status import BookingStatus
 from models.user.user_internal import UserInternal
-from pydantic import field_validator, model_validator
+from pydantic import model_validator
 
 utc = pytz.UTC
 
@@ -16,15 +17,16 @@ class BookingsInternal(Document):
     event_start: datetime = None
     event_end: datetime = None
     created_at: datetime = datetime.now(tz = utc)
+    status: BookingStatus = BookingStatus.ACTIVE
 
     @model_validator(mode = 'after')
-    def validate_dates(self):
-        if not self.event_end >= self.event_start and self.event_start >= self.created_at:
+    def validate_dates(cls):
+        if not cls.event_end >= cls.event_start and cls.event_start >= cls.created_at:
             raise ValueError("Event end cannot be before the event start time.")
-        return self
+        return cls
 
     def __str__(self):
-        return f"Booking by : {self.user_id.username}, created_at: {self.created_at}"
+        return f"Booking by : {self.user_id}, created_at: {self.created_at}"
 
     class Settings:
         name = "bookings"

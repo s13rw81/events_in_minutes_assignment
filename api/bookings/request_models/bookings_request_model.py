@@ -9,5 +9,4 @@ class BookingsRequest(BaseModel):
     venue_id: Optional[int] = None
     event_start: Optional[datetime] = None
     event_end: Optional[datetime] = None
-    # id for updating booking
     booking_id: Optional[str] = None
