@@ -1,0 +1,12 @@
+beanie==1.26.0
+fastapi==0.111.0
+jose==1.0.0
+motor==3.4.0
+pydantic==2.7.3
+pymongo==4.7.3
+python-jose==3.3.0
+python-multipart==0.0.9
+pytz==2024.1
+requests==2.32.3
+rsa==4.9
+watchfiles==0.22.0
